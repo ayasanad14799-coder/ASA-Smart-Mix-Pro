@@ -1,46 +1,66 @@
-# ASA-Smart-Mix-Pro
-ASA Smart Mix Pro (v2.0)
-AI-Driven Multi-Criteria Optimization for Eco-Efficient Concrete
-📋 نظرة عامة | Overview
-هذا المشروع هو النظام البرمجي المتكامل لرسالة الماجستير بعنوان:
+# 🏗️ ASA Smart Mix Pro (v2.0)
+### **AI-Powered Multi-Criteria Optimization for Eco-Efficient Concrete**
 
-"التحليل متعدد المعايير للخرسانة ذات الكفاءة البيئية من الجوانب الفنية والبيئية والاقتصادية" "Multi-criteria analysis of eco-efficient concrete from Technical, Environmental and Economic aspects"
+<div align="center">
 
-نظام ASA Smart Mix Pro يستخدم تقنيات التعلم الآلي المتقدمة (Machine Learning) للتنبؤ بأداء الخرسانة الخضراء، موازناً بين المتطلبات الإنشائية، التكلفة المادية، والبصمة الكربونية.
+![Logo](https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix2/main/LOGO.png)
 
-🎓 الفريق البحثي | Research Team
-الباحثة (Researcher): آية محمد سند عبود (Aya Mohammed Sanad Aboud)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io/)
+[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
 
-تحت إشراف (Supervised by):
+**Advanced Predictive Model for Sustainable Concrete using Gradient Boosting Regression**
 
-أ.د. أحمد طهوية (Prof. Ahmed Tahwia)
+[العربية](README.md) | [English](README_EN.md)
 
-أ.م.د. أسر الشيخ (Assoc. Prof. Asser El-Sheikh)
+</div>
 
-المؤسسة: جامعة المنصورة - كلية الهندسة (Mansoura University - Faculty of Engineering)
+---
 
-✨ المميزات الرئيسية | Key Features
-🎯 دقة التنبؤ: تصل إلى 95.3% لمقاومة الضغط (Compressive Strength).
+## 🎓 Research Identity | الهوية البحثية
+* **Researcher:** Aya Mohammed Sanad Aboud
+* **Supervisors:** * Prof. Ahmed Tahwia
+  * Assoc. Prof. Asser El-Sheikh
+* **Thesis Title:** Multi-criteria analysis of eco-efficient concrete from Technical, Environmental and Economic aspects.
+* **Institution:** Mansoura University - Faculty of Engineering.
 
-🌱 الاستدامة البيئية: تقييم فوري لانبعاثات CO₂ (LCA Report).
+---
 
-💰 التحليل الاقتصادي: حساب التكلفة التقديرية للمتر المكعب.
+## 📊 Scientific Validation | التحقق العلمي
+Below are the performance metrics of the AI model based on the "Diamond Database" (1,243 mixes):
 
-📊 الموازنة الذكية: استخدام الرسم الراداري (Radar Chart) للمفاضلة بين الخلطات.
+<div align="center">
+  <img src="https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix2/main/accuracy_plot.png" width="400" alt="Accuracy Plot">
+  <img src="https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix2/main/feature_importance.png" width="400" alt="Feature Importance">
+</div>
 
-🧪 الموثوقية: ربط النتائج بأقرب 1,243 خلطة معملية حقيقية.
+* **Prediction Accuracy (R²):** 95.3%
+* **Key Influencers:** Cement, W/C Ratio, and Silica Fume.
 
-📂 هيكل المشروع | Project Structure
+---
+
+## 🔬 Study Variables | المتغيرات المدروسة (11 Inputs)
+Unlike standard models, this system analyzes 11 critical parameters:
+1. **Cement** | 2. **Water** | 3. **NCA** | 4. **NFA**
+5. **RCA Replacement (%)** | 6. **MRCA Replacement (%)**
+7. **Silica Fume** | 8. **Fly Ash** | 9. **Nylon Fiber**
+10. **W/C Ratio** | 11. **Superplasticizer**
+
+---
+
+## 📁 Project Structure | هيكل المشروع
+```text
 ASA-Smart-Mix-Pro/
-├── app/              # واجهة المستخدم (main.py)
-├── data/             # قاعدة البيانات (Diamond Database)
-├── models/           # النماذج المدربة (Scaler & Model)
-├── requirements.txt  # المكتبات المطلوبة
-└── README.md         # هذا الملف (وصف المشروع)
-🚀 طريقة التشغيل | Usage
-البرنامج متاح كمنصة ويب تفاعلية عبر Streamlit. يمكن للمستخدم إدخال 11 متغيراً (إسمنت، ماء، ركام، إضافات..) والحصول على تحليل كامل فوري.
-
-📝 إخلاء مسؤولية | Disclaimer
-هذا النظام أداة استرشادية للبحث العلمي. يجب دائماً إجراء الاختبارات المعملية الفيزيائية للتحقق من النتائج قبل التطبيق الإنشائي الفعلي.
-
-© 2026 - جميع الحقوق محفوظة للباحثة آية سند
+├── app/              # Web Interface (main.py)
+├── data/             # Diamond Database (CSV)
+├── models/           # Trained Models (.joblib)
+├── docs/             # Laboratory Photos & Methodology
+└── requirements.txt  # Libraries (Streamlit, Scikit-learn, etc.)
+🚀 How to Run | طريقة التشغيل
+# Clone the repository
+git clone [https://github.com/ayasanad14799-coder/ASA-Smart-Mix-Pro.git](https://github.com/ayasanad14799-coder/ASA-Smart-Mix-Pro.git)
+# Install dependencies
+pip install -r requirements.txt
+# Run the app
+streamlit run app/main.py
+© 2026 Aya Sanad | Master's Thesis Project
