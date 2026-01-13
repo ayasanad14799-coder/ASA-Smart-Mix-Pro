@@ -8,7 +8,7 @@ import requests
 from datetime import datetime
 
 # 1. إعدادات الهوية البصرية (UX/UI)
-st.set_page_config(page_title="ASA Smart Mix Pro | AI Optimizer", layout="wide", page_icon="🏗️")
+st.set_page_config(page_title="ASA Smart Mix Pro | Cloud AI Optimizer", layout="wide", page_icon="🏗️")
 
 # دالة الربط السحابي (Google Form)
 def send_to_google_form(data):
@@ -23,7 +23,7 @@ def send_to_google_form(data):
         "entry.2013040846": data['STS'], "entry.895159496": data['EM'],
         "entry.422145962": data['CO2'], "entry.1912821133": data['Cost'],
         "entry.1503898770": data['Sust'], "entry.1275091872": data['Rank'],
-        "entry.1583578049": data['Type'], "entry.1785868407": "ASA_V4.0_FINAL"
+        "entry.1583578049": data['Type'], "entry.1785868407": "ASA_V5.0_ULTIMATE"
     }
     try:
         requests.post(form_url, data=payload, timeout=8)
@@ -51,9 +51,9 @@ if not st.session_state.auth:
     with r_sp: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=120)
     with mid_c:
         st.markdown("<h1 style='text-align: center; color: #004a99;'>ASA Smart Mix Pro</h1>", unsafe_allow_html=True)
-        st.markdown("<div class='thesis-title'>AI-Driven Framework for Eco-Efficient Concrete Optimization</div>", unsafe_allow_html=True)
+        st.markdown("<div class='thesis-title'>AI Framework for Multi-Criteria Analysis of Eco-Efficient Concrete</div>", unsafe_allow_html=True)
         with st.form("Login"):
-            pwd = st.text_input("Enter Access Key", type="password")
+            pwd = st.text_input("Access Key", type="password")
             if st.form_submit_button("Enter Research Lab"):
                 if pwd == "ASA2026": st.session_state.auth = True; st.rerun()
                 else: st.error("Access Denied.")
@@ -70,36 +70,37 @@ def load_assets():
 
 model, scaler, db = load_assets()
 
-# 4. الهيدر الداخلي (شعارات متباعدة)
+# 4. الهيدر الداخلي
 h_l, h_m, h_r = st.columns([1, 6, 1])
 with h_l: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=100)
 with h_r: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=100)
 with h_m:
-    st.markdown("<h1 class='main-title'>ASA Smart Mix Pro v4.0</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='thesis-title'>Technical, Environmental and Economic analysis of Eco-efficient concrete</div>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>ASA Smart Mix Pro v5.0</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='thesis-title'>Comprehensive Technical, Environmental and Economic analysis</div>", unsafe_allow_html=True)
 
 # 5. المدخلات (الـ 11 متغير)
 with st.sidebar:
     st.header("📋 Mix Inputs")
     cem = st.number_input("Cement (kg/m³)", 200, 600, 350)
     wat = st.number_input("Water (kg/m³)", 100, 300, 160)
-    nca = st.number_input("NCA (Natural Coarse)", 0, 1500, 1100)
-    nfa = st.number_input("NFA (Fine Aggregate)", 0, 1200, 700)
+    nca = st.number_input("NCA (Coarse)", 0, 1500, 1100)
+    nfa = st.number_input("NFA (Fine)", 0, 1200, 700)
     rca = st.slider("RCA Replacement (%)", 0, 100, 0)
     mrca = st.slider("MRCA Replacement (%)", 0, 100, 0)
     sf = st.number_input("Silica Fume (kg/m³)", 0, 150, 0)
     fa = st.number_input("Fly Ash (kg/m³)", 0, 250, 0)
-    fib = st.number_input("Nylon Fiber (kg/m³)", 0.0, 10.0, 0.0)
+    fib = st.number_input("Fiber (kg/m³)", 0.0, 10.0, 0.0)
     wc = st.slider("W/C Ratio", 0.2, 0.8, 0.45)
     sp = st.number_input("Superplasticizer", 0.0, 20.0, 2.0)
 
-# 6. التنبؤ بالمخرجات (Multi-output Mapping) [حل مشكلة الترحيل والـ IndexError]
-if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True):
+# 6. التشغيل (التنبؤ المتعدد - Multi-output)
+if st.button("🚀 Analyze Comprehensive Mix Performance", use_container_width=True):
     inputs = scaler.transform([[cem, wat, nca, nfa, rca, mrca, sf, fa, fib, wc, sp]])
     preds = model.predict(inputs)[0] 
     
-    # ربط المخرجات بالترتيب الحقيقي (بناءً على أن الموديل يتنبأ من العمود 18 فصاعداً)
-    # 0=CS_7, 1=CS_28, 2=CS_90, 3=STS, 4=FS, 5=EM, 6=Water_Abs, 7=UPV, 8=Shrinkage, 9=Carb_Depth...
+    # ربط المخرجات الـ 17 بناءً على تدريب الموديل (Array Mapping)
+    # 0:CS_7, 1:CS_28, 2:CS_90, 3:STS, 4:FS, 5:EM, 6:Water_Abs, 7:UPV, 8:Shrinkage, 9:Carb_Depth
+    # 11:CO2, 13:Cost, 16:Sustainability
     p_7d, p_28d, p_90d = preds[0], preds[1], preds[2] 
     p_sts, p_fs, p_em  = preds[3], preds[4], preds[5]
     p_abs, p_upv, p_shr, p_carb = preds[6], preds[7], preds[8], preds[9]
@@ -108,27 +109,25 @@ if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True)
     tabs = st.tabs(["📊 Mechanical", "🏗️ Durability", "🌱 Economy", "🚀 Optimizer", "📜 Methodology", "📝 Feedback"])
 
     with tabs[0]:
-        st.subheader("Strength Development Matrix")
+        st.subheader("Strength & Mechanical Performance")
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("CS 7-Days", f"{p_7d:.2f} MPa")
-        m2.metric("CS 28-Days", f"{p_28d:.2f} MPa")
+        m2.metric("CS 28-Days (AI)", f"{p_28d:.2f} MPa")
         m3.metric("CS 90-Days", f"{p_90d:.2f} MPa")
         m4.metric("Split Tensile", f"{p_sts:.2f} MPa")
-        
-        fig = px.line(x=[7, 28, 90], y=[p_7d, p_28d, p_90d], title="Strength Gain Chart", markers=True)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(px.line(x=[7, 28, 90], y=[p_7d, p_28d, p_90d], title="Strength Gain Chart", markers=True))
         
         if st.button("📤 Sync Full Report"):
-            d = {"Cement": cem, "Water": wat, "NCA": nca, "NFA": nfa, "RCA_P": rca, "MRCA_P": mrca, "SF": sf, "FA": fa, "Fiber": fib, "W_C": wc, "SP": sp, "CS_28": round(p_28d, 2), "STS": round(p_sts, 2), "EM": round(p_em, 2), "CO2": round(p_co2, 2), "Cost": round(p_cost, 2), "Sust": round(p_sust, 4), "Rank": "A+", "Type": "Final_Master_Prediction"}
-            if send_to_google_form(d): st.balloons(); st.success("✅ Synced!")
+            d = {"Cement": cem, "Water": wat, "NCA": nca, "NFA": nfa, "RCA_P": rca, "MRCA_P": mrca, "SF": sf, "FA": fa, "Fiber": fib, "W_C": wc, "SP": sp, "CS_28": round(p_28d, 2), "STS": round(p_sts, 2), "EM": round(p_em, 2), "CO2": round(p_co2, 2), "Cost": round(p_cost, 2), "Sust": round(p_sust, 4), "Rank": "A+", "Type": "AI_Prediction_V5"}
+            if send_to_google_form(d): st.balloons(); st.success("✅ Recorded in Cloud Database!")
 
     with tabs[1]:
-        st.subheader("Durability & Physical Properties")
+        st.subheader("Durability Indices")
         d1, d2, d3, d4 = st.columns(4)
         d1.metric("UPV Speed", f"{p_upv:.2f} km/s")
         d2.metric("Water Abs.", f"{p_abs:.2f} %")
         d3.metric("Carb. Depth", f"{p_carb:.2f} mm")
-        d4.metric("Shrinkage", f"{p_shr:.2f}")
+        d4.metric("Elastic Modulus", f"{p_em:.2f} GPa")
 
     with tabs[4]:
         st.subheader("Technical Methodology")
@@ -136,7 +135,6 @@ if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True)
         <div class='doc-card'>
         <b>Algorithm:</b> Random Forest Multi-output Regression<br>
         <b>Database:</b> DIAMOND Database ({len(db)} Samples)<br>
-        <b>Domain:</b> {db['CS_28'].min()} to {db['CS_28'].max()} MPa<br>
         <b>R² Accuracy:</b> 95.57% | <b>COV:</b> 6.16%
         </div>
         """, unsafe_allow_html=True)
@@ -148,6 +146,6 @@ if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True)
 st.markdown(f"""
     <div class='footer-text'>
     © {datetime.now().year} Aya Mohammed Sanad | Mansoura University<br>
-    <b>Disclaimer:</b> This AI tool is for research purposes. Actual laboratory trials are mandatory for structural implementation.
+    <b>Disclaimer:</b> This AI tool is for research purposes only. Actual laboratory trials are mandatory for structural implementation.
     </div>
     """, unsafe_allow_html=True)
