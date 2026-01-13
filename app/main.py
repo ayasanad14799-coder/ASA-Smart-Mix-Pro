@@ -7,10 +7,10 @@ import plotly.express as px
 import requests
 from datetime import datetime
 
-# 1. الإعدادات الرسمية والهوية البصرية (UX/UI)
+# 1. إعدادات الهوية البصرية والأكاديمية
 st.set_page_config(page_title="ASA Smart Mix Pro | Cloud AI Optimizer", layout="wide", page_icon="🏗️")
 
-# دالة إرسال البيانات إلى Google Form (الربط المضمون) [نقطة 8]
+# دالة الربط السحابي (Google Form) لتوثيق 20 خانة بحثية
 def send_to_google_form(data):
     form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfcSRu1cYGpJtMEX3i09-PihlEgkek2pWWmNHXDnLOQrGsgSQ/formResponse"
     payload = {
@@ -19,21 +19,21 @@ def send_to_google_form(data):
         "entry.402911999": data['RCA_P'], "entry.2027878370": data['MRCA_P'],
         "entry.834926487": data['SF'], "entry.1854682480": data['FA'],
         "entry.1224546954": data['Fiber'], "entry.1438579923": data['W_C'],
-        "entry.577250201": data['SP'], "entry.340296413": data['Strength'],
+        "entry.577250201": data['SP'], "entry.340296413": data['CS_28'],
         "entry.2013040846": data['STS'], "entry.895159496": data['EM'],
         "entry.422145962": data['CO2'], "entry.1912821133": data['Cost'],
-        "entry.1503898770": data['Sustainability'], "entry.1275091872": data['Rank'],
-        "entry.1583578049": data['Type'], "entry.1785868407": "ASA_V3_FINAL"
+        "entry.1503898770": data['Sust'], "entry.1275091872": data['Rank'],
+        "entry.1583578049": data['Type'], "entry.1785868407": "ASA_MASTER_V3.8"
     }
     try:
         requests.post(form_url, data=payload, timeout=8)
         return True
     except: return False
 
-# تنسيق CSS الأكاديمي (Times New Roman) [نقطة 14]
+# تنسيق CSS الأكاديمي الرسمي (Times New Roman)
 st.markdown("""
     <style>
-    .main-title { color: #004a99; text-align: center; font-weight: bold; font-size: 3em; margin-bottom: 0px; }
+    .main-title { color: #004a99; text-align: center; font-weight: bold; font-size: 3em; margin: 0px; }
     .thesis-title { 
         color: #222; text-align: center; font-family: "Times New Roman", Times, serif; 
         font-size: 22px; font-weight: bold; border-bottom: 3px solid #004a99; padding-bottom: 10px; margin-bottom: 20px;
@@ -43,139 +43,115 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. نظام الدخول والشعارات [نقطة 14]
+# 2. نظام الدخول وتوزيع الشعارات (طرد للأطراف)
 if "auth" not in st.session_state: st.session_state.auth = False
 if not st.session_state.auth:
-    col_l, col_mid, col_r = st.columns([1, 3, 1])
-    with col_mid:
-        l_col, r_col = st.columns([1, 1])
-        l_col.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=110)
-        r_col.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=110)
-        st.markdown("<h2 style='text-align: center;'>ASA Smart Mix Pro | AI Dashboard</h2>", unsafe_allow_html=True)
+    l_sp, mid_c, r_sp = st.columns([1, 4, 1])
+    with l_sp: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=120)
+    with r_sp: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=120)
+    with mid_content := mid_c:
+        st.markdown("<h1 style='text-align: center; color: #004a99;'>ASA Smart Mix Pro</h1>", unsafe_allow_html=True)
+        st.markdown("<div class='thesis-title'>AI-Driven Framework for Eco-Efficient Concrete Optimization</div>", unsafe_allow_html=True)
         with st.form("Login"):
-            pwd = st.text_input("Access Key", type="password")
-            if st.form_submit_button("Start Research Session"):
+            pwd = st.text_input("Enter Access Key", type="password")
+            if st.form_submit_button("Enter Research Lab"):
                 if pwd == "ASA2026": st.session_state.auth = True; st.rerun()
-                else: st.error("Access Denied. Please contact Researcher Aya Sanad.")
+                else: st.error("Access Denied.")
     st.stop()
 
-# 3. تحميل الموديل والبيانات (الـ 35 عمود) [نقطة 10، 12]
+# 3. تحميل الموديل والبيانات
 @st.cache_resource
-def load_research_data():
-    model = joblib.load('uploaded:concrete_model.joblib')
-    scaler = joblib.load('uploaded:scaler.joblib')
-    # قراءة الملف مع التأكد من الفواصل 
-    db = pd.read_csv('uploaded:Trail3_DIAMOND_DATABASE.csv', sep=';' if ';' in open('uploaded:Trail3_DIAMOND_DATABASE.csv').read() else ',')
+def load_assets():
+    model = joblib.load('models/concrete_model.joblib')
+    scaler = joblib.load('models/scaler.joblib')
+    db = pd.read_csv('data/Trail3_DIAMOND_DATABASE.csv', sep=';' if ';' in open('data/Trail3_DIAMOND_DATABASE.csv').read() else ',')
     db.columns = db.columns.str.strip()
     return model, scaler, db
 
-model, scaler, db = load_research_data()
+model, scaler, db = load_assets()
 
-# 4. واجهة المستخدم الرئيسية والمعلومات الأكاديمية
-st.markdown("<h1 class='main-title'>ASA Smart Mix Pro v3.0</h1>", unsafe_allow_html=True)
-st.markdown("<div class='thesis-title'>Multi-criteria analysis of eco-efficient concrete from Technical, Environmental and Economic aspects</div>", unsafe_allow_html=True)
+# 4. الهيدر الداخلي (شعارات متباعدة)
+h_l, h_m, h_r = st.columns([1, 6, 1])
+with h_l: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=100)
+with h_r: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=100)
+with h_m:
+    st.markdown("<h1 class='main-title'>ASA Smart Mix Pro v3.8</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='thesis-title'>Technical, Environmental and Economic analysis of Eco-efficient concrete</div>", unsafe_allow_html=True)
 
-c_info1, c_info2 = st.columns(2)
-with c_info1: st.markdown("<div class='doc-card'><b>🎓 Researcher:</b> Aya Mohammed Sanad Aboud<br>Mansoura University</div>", unsafe_allow_html=True)
-with c_info2: st.markdown("<div class='doc-card'><b>👨‍🏫 Supervision:</b> Prof. Ahmed Tahwia | Assoc. Prof. Asser El-Sheikh</div>", unsafe_allow_html=True)
-
-# 5. شريط المدخلات (الـ 11 متغير مع الحدود المنطقية) [نقطة 7]
+# 5. المدخلات (الـ 11 متغير)
 with st.sidebar:
-    st.header("📋 Mix Constituents")
-    st.markdown("---")
-    cem = st.number_input("1. Cement (kg/m³)", 200, 600, 350)
-    wat = st.number_input("2. Water (kg/m³)", 100, 300, 160)
-    nca = st.number_input("3. NCA (Natural Coarse)", 0, 1500, 1100)
-    nfa = st.number_input("4. NFA (Fine Aggregate)", 0, 1200, 700)
-    rca = st.slider("5. RCA Replacement (%)", 0, 100, 0)
-    mrca = st.slider("6. MRCA Replacement (%)", 0, 100, 0)
-    sf = st.number_input("7. Silica Fume (kg/m³)", 0, 150, 0)
-    fa = st.number_input("8. Fly Ash (kg/m³)", 0, 250, 0)
-    fib = st.number_input("9. Nylon Fiber (kg/m³)", 0.0, 10.0, 0.0)
-    wc = st.slider("10. W/C Ratio", 0.2, 0.8, 0.45)
-    sp = st.number_input("11. Superplasticizer (kg/m³)", 0.0, 20.0, 2.0)
+    st.header("📋 Mix Inputs")
+    cem = st.number_input("Cement (kg/m³)", 200, 600, 350)
+    wat = st.number_input("Water (kg/m³)", 100, 300, 160)
+    nca = st.number_input("NCA (Natural Coarse)", 0, 1500, 1100)
+    nfa = st.number_input("NFA (Fine Aggregate)", 0, 1200, 700)
+    rca = st.slider("RCA Replacement (%)", 0, 100, 0)
+    mrca = st.slider("MRCA Replacement (%)", 0, 100, 0)
+    sf = st.number_input("Silica Fume (kg/m³)", 0, 150, 0)
+    fa = st.number_input("Fly Ash (kg/m³)", 0, 250, 0)
+    fib = st.number_input("Nylon Fiber (kg/m³)", 0.0, 10.0, 0.0)
+    wc = st.slider("W/C Ratio", 0.2, 0.8, 0.45)
+    sp = st.number_input("Superplasticizer", 0.0, 20.0, 2.0)
 
-# 6. محرك التشغيل الرئيسي والنتائج [نقطة 11، 13]
-if st.button("🚀 Run AI Analysis & Generate Full Report", use_container_width=True):
+# 6. التنبؤ بالمخرجات (Multi-output Mapping) [منع الترحيل]
+if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True):
     inputs = scaler.transform([[cem, wat, nca, nfa, rca, mrca, sf, fa, fib, wc, sp]])
-    pred_28 = model.predict(inputs)[0] # المقاومة عند 28 يوم [cite: 4]
+    preds = model.predict(inputs)[0] # سحب مصفوفة المخرجات من الموديل
     
-    # حسابات تكميلية للنمو الزمني والديمومة [نقطة 6]
-    pred_7 = round(0.74 * pred_28, 2) # تقديري بناءً على نمو الخرسانة [cite: 4]
-    pred_90 = round(1.17 * pred_28, 2) # [cite: 4]
-    sts = round(0.55 * np.sqrt(pred_28), 2) # معادلة الكود [cite: 4]
-    em = round(4.7 * np.sqrt(pred_28), 2) # [cite: 3]
-    
-    co2 = (cem*0.85 + sf*0.02 + fa*0.01 + (nca+nfa)*0.005 + sp*0.7 + fib*2.5)
-    cost = (cem*0.1 + sf*0.25 + fa*0.03 + nca*0.015 + nfa*0.012 + sp*1.5 + fib*4.0)
-    sust = (pred_28 / (co2 * cost)) * 1000
+    # ربط المخرجات بترتيب ملف الـ CSV لضمان عدم الترحيل
+    p_7d, p_28d, p_90d = preds[0], preds[1], preds[2] 
+    p_sts, p_fs, p_em  = preds[3], preds[4], preds[5]
+    p_abs, p_upv, p_shr, p_carb = preds[6], preds[7], preds[8], preds[9]
+    p_co2, p_cost, p_sust = preds[11], preds[13], preds[16]
 
-    # نظام التبويبات المتكامل (6 تبويبات) [نقطة 14]
-    t1, t2, t3, t4, t5, t6 = st.tabs(["📊 Performance", "🏗️ Durability", "🌱 Economy & CO2", "🚀 AI Optimizer", "📜 Methodology", "📝 Feedback"])
+    tabs = st.tabs(["📊 Mechanical", "🏗️ Durability", "🌱 Economy", "🚀 Optimizer", "📜 Methodology", "📝 Feedback"])
 
-    with t1:
-        st.subheader("Predicted Strength Development")
+    with tabs[0]:
+        st.subheader("Strength Development Matrix")
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("CS 7-Days", f"{pred_7} MPa")
-        m2.metric("CS 28-Days (Target)", f"{pred_28:.2f} MPa")
-        m3.metric("CS 90-Days", f"{pred_90} MPa")
-        m4.metric("Split Tensile", f"{sts} MPa")
+        m1.metric("CS 7-Days", f"{p_7d:.2f} MPa")
+        m2.metric("CS 28-Days", f"{p_28d:.2f} MPa")
+        m3.metric("CS 90-Days", f"{p_90d:.2f} MPa")
+        m4.metric("Split Tensile", f"{p_sts:.2f} MPa")
+        st.plotly_chart(px.line(x=[7, 28, 90], y=[p_7d, p_28d, p_90d], title="Strength Evolution", markers=True))
         
-        # رسم بياني لمنحنى القوة الزمني [نقطة 5]
-        fig_line = px.line(x=[7, 28, 90], y=[pred_7, pred_28, pred_90], title="Concrete Strength Evolution Chart", markers=True)
-        st.plotly_chart(fig_line, use_container_width=True)
-        
-        if st.button("📤 Sync Report to Master Cloud"):
-            d = {"Cement": cem, "Water": wat, "NCA": nca, "NFA": nfa, "RCA_P": rca, "MRCA_P": mrca, "SF": sf, "FA": fa, "Fiber": fib, "W_C": wc, "SP": sp, "Strength": round(pred_28, 2), "STS": sts, "EM": em, "CO2": round(co2, 2), "Cost": round(cost, 2), "Sustainability": round(sust, 4), "Rank": "A+", "Type": "Master_Research_Sync"}
-            if send_to_google_form(d): st.balloons(); st.success("✅ Recorded in Google Sheets!")
+        if st.button("📤 Sync Full Report"):
+            d = {"Cement": cem, "Water": wat, "NCA": nca, "NFA": nfa, "RCA_P": rca, "MRCA_P": mrca, "SF": sf, "FA": fa, "Fiber": fib, "W_C": wc, "SP": sp, "CS_28": round(p_28d, 2), "STS": round(p_sts, 2), "EM": round(p_em, 2), "CO2": round(p_co2, 2), "Cost": round(p_cost, 2), "Sust": round(p_sust, 4), "Rank": "A+", "Type": "AI_Prediction"}
+            if send_to_google_form(d): st.balloons(); st.success("✅ Recorded in Master Database!")
 
-    with t2:
-        st.subheader("Durability & Elastic Properties")
-        d1, d2 = st.columns(2)
-        d1.metric("Elastic Modulus (EM)", f"{em} GPa")
-        d2.metric("Estimated UPV Speed", f"{3.5 + (pred_28/100):.2f} km/s")
+    with tabs[1]:
+        st.subheader("Durability & Physical Properties")
+        d1, d2, d3, d4 = st.columns(4)
+        d1.metric("UPV Speed", f"{p_upv:.2f} km/s")
+        d2.metric("Water Abs.", f"{p_abs:.2f} %")
+        d3.metric("Carb. Depth", f"{p_carb:.2f} mm")
+        d4.metric("Shrinkage", f"{p_shr:.2f}")
 
-    with t3:
+    with tabs[2]:
         st.subheader("Environmental & Economic Analysis")
-        l1, l2 = st.columns(2)
-        l1.metric("CO2 Footprint", f"{co2:.1f} kg/m³")
-        l2.metric("Sust. Index", f"{sust:.3f}")
-        st.plotly_chart(px.pie(values=[cem*0.85, sf*0.02, fa*0.01, sp*0.7], names=["Cement", "SF", "FA", "SP"], title="CO2 Source Analysis"))
+        l1, l2, l3 = st.columns(3)
+        l1.metric("CO2 Footprint", f"{p_co2:.1f} kg/m³")
+        l2.metric("Mix Cost", f"${p_cost:.2f}")
+        l3.metric("Sust. Index", f"{p_sust:.3f}")
 
-    with t4:
-        st.subheader("AI Smart Mix Recommender (Diamond DB)")
-        target_s = st.slider("Select Target Strength", 20, 100, 40, key="opt_v4")
-        if st.button("Generate Candidate Designs"):
-            matches = db[(db['CS_28'] >= target_s-2.5) & (db['CS_28'] <= target_s+2.5)].sort_values('Sustainability', ascending=False).head(5)
-            st.dataframe(matches[['Mix_ID', 'Cement', 'Water', 'RCA_P', 'CS_28', 'Sustainability']], use_container_width=True)
-
-    with t5:
-        st.subheader("Technical Methodology & Reliability") # [نقطة 1، 2، 3، 10، 12]
+    with tabs[4]:
+        st.subheader("Technical Methodology")
         st.markdown(f"""
         <div class='doc-card'>
-        <b>Algorithm:</b> Random Forest Regression (Multi-output) [cite: 8]<br>
-        <b>Database:</b> DIAMOND Research Repository ({len(db)} Samples) [cite: 11, 12]<br>
-        <b>Strength Domain:</b> {db['CS_28'].min()} to {db['CS_28'].max()} MPa [cite: 14]<br>
-        <b>Model Accuracy (R²):</b> 95.57% | <b>COV (Stability):</b> 6.16% 
+        <b>Algorithm:</b> Random Forest Multi-output Regression<br>
+        <b>Dataset:</b> DIAMOND Database ({len(db)} Samples)<br>
+        <b>Domain:</b> {db['CS_28'].min()} to {db['CS_28'].max()} MPa (CS_28 Range)<br>
+        <b>R² Accuracy:</b> 95.57% | <b>COV:</b> 6.16%
         </div>
         """, unsafe_allow_html=True)
         v1, v2 = st.columns(2)
-        v1.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/accuracy_plot.png", caption="Blind Test: Actual vs. Predicted [نقطة 2]")
-        v2.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/feature_importance.png", caption="Feature Sensitivity Analysis [نقطة 5]")
+        v1.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/accuracy_plot.png", caption="Accuracy Plot")
+        v2.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/feature_importance.png", caption="Feature Sensitivity")
 
-    with t6:
-        st.subheader("Experimental Feedback Hub") # [نقطة 4]
-        with st.form("fb_form"):
-            st.write("Help us improve the model by sharing your lab results:")
-            lab_s = st.number_input("Actual Laboratory Strength (MPa)")
-            fb_msg = st.text_area("Observations/Differences noticed")
-            if st.form_submit_button("Submit to Researcher"):
-                st.success("✅ Feedback logged! This data will be used for Model Retraining.")
-
-# 7. الفوتر النهائي وإخلاء المسؤولية [نقطة 9]
+# 7. الفوتر مع إخلاء المسؤولية
 st.markdown(f"""
     <div class='footer-text'>
-    © {datetime.now().year} Aya Mohammed Sanad | Mansoura University - Structural Engineering Dept.<br>
-    <b>Disclaimer:</b> This AI tool is for research and design purposes. Actual laboratory trials are mandatory for structural implementation as per official codes. [نقطة 9]
+    © {datetime.now().year} Aya Mohammed Sanad | Mansoura University<br>
+    <b>Disclaimer:</b> This AI tool is for research purposes. Actual laboratory trials are mandatory for structural implementation.
     </div>
     """, unsafe_allow_html=True)
