@@ -10,7 +10,7 @@ from datetime import datetime
 # 1. إعدادات الهوية البصرية والأكاديمية
 st.set_page_config(page_title="ASA Smart Mix Pro | Cloud AI Optimizer", layout="wide", page_icon="🏗️")
 
-# دالة الربط السحابي (Google Form) لتوثيق 20 خانة بحثية
+# دالة الربط السحابي (Google Form) لتوثيق 20 خانة بحثية 
 def send_to_google_form(data):
     form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfcSRu1cYGpJtMEX3i09-PihlEgkek2pWWmNHXDnLOQrGsgSQ/formResponse"
     payload = {
@@ -23,14 +23,14 @@ def send_to_google_form(data):
         "entry.2013040846": data['STS'], "entry.895159496": data['EM'],
         "entry.422145962": data['CO2'], "entry.1912821133": data['Cost'],
         "entry.1503898770": data['Sust'], "entry.1275091872": data['Rank'],
-        "entry.1583578049": data['Type'], "entry.1785868407": "ASA_MASTER_V3.8"
+        "entry.1583578049": data['Type'], "entry.1785868407": "ASA_FINAL_V3.9"
     }
     try:
         requests.post(form_url, data=payload, timeout=8)
         return True
     except: return False
 
-# تنسيق CSS الأكاديمي الرسمي (Times New Roman)
+# تنسيق CSS الأكاديمي الرسمي (Times New Roman) 
 st.markdown("""
     <style>
     .main-title { color: #004a99; text-align: center; font-weight: bold; font-size: 3em; margin: 0px; }
@@ -43,13 +43,15 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. نظام الدخول وتوزيع الشعارات (طرد للأطراف)
+# 2. نظام الدخول وتوزيع الشعارات (طرد للأطراف) 
 if "auth" not in st.session_state: st.session_state.auth = False
 if not st.session_state.auth:
     l_sp, mid_c, r_sp = st.columns([1, 4, 1])
-    with l_sp: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=120)
-    with r_sp: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=120)
-    with mid_content := mid_c:
+    with l_sp:
+        st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=120)
+    with r_sp:
+        st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=120)
+    with mid_c:
         st.markdown("<h1 style='text-align: center; color: #004a99;'>ASA Smart Mix Pro</h1>", unsafe_allow_html=True)
         st.markdown("<div class='thesis-title'>AI-Driven Framework for Eco-Efficient Concrete Optimization</div>", unsafe_allow_html=True)
         with st.form("Login"):
@@ -59,7 +61,7 @@ if not st.session_state.auth:
                 else: st.error("Access Denied.")
     st.stop()
 
-# 3. تحميل الموديل والبيانات
+# 3. تحميل الموديل والبيانات (الـ 36 عمود) 
 @st.cache_resource
 def load_assets():
     model = joblib.load('models/concrete_model.joblib')
@@ -75,10 +77,10 @@ h_l, h_m, h_r = st.columns([1, 6, 1])
 with h_l: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=100)
 with h_r: st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=100)
 with h_m:
-    st.markdown("<h1 class='main-title'>ASA Smart Mix Pro v3.8</h1>", unsafe_allow_html=True)
-    st.markdown("<div class='thesis-title'>Technical, Environmental and Economic analysis of Eco-efficient concrete</div>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>ASA Smart Mix Pro v3.9</h1>", unsafe_allow_html=True)
+    st.markdown("<div class='thesis-title'>Multi-criteria analysis of eco-efficient concrete from Technical, Environmental and Economic aspects</div>", unsafe_allow_html=True)
 
-# 5. المدخلات (الـ 11 متغير)
+# 5. المدخلات (الـ 11 متغير) 
 with st.sidebar:
     st.header("📋 Mix Inputs")
     cem = st.number_input("Cement (kg/m³)", 200, 600, 350)
@@ -93,16 +95,16 @@ with st.sidebar:
     wc = st.slider("W/C Ratio", 0.2, 0.8, 0.45)
     sp = st.number_input("Superplasticizer", 0.0, 20.0, 2.0)
 
-# 6. التنبؤ بالمخرجات (Multi-output Mapping) [منع الترحيل]
+# 6. التنبؤ بالمخرجات (Multi-output Mapping) 
 if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True):
     inputs = scaler.transform([[cem, wat, nca, nfa, rca, mrca, sf, fa, fib, wc, sp]])
-    preds = model.predict(inputs)[0] # سحب مصفوفة المخرجات من الموديل
+    preds = model.predict(inputs)[0] 
     
-    # ربط المخرجات بترتيب ملف الـ CSV لضمان عدم الترحيل
-    p_7d, p_28d, p_90d = preds[0], preds[1], preds[2] 
-    p_sts, p_fs, p_em  = preds[3], preds[4], preds[5]
-    p_abs, p_upv, p_shr, p_carb = preds[6], preds[7], preds[8], preds[9]
-    p_co2, p_cost, p_sust = preds[11], preds[13], preds[16]
+    # ربط المخرجات بالترتيب الحقيقي للأعمدة 
+    p_7d, p_28d, p_90d = preds[18], preds[19], preds[20] # CS_7, CS_28, CS_90
+    p_sts, p_fs, p_em  = preds[21], preds[22], preds[23] # STS, FS, EM
+    p_abs, p_upv, p_shr, p_carb = preds[24], preds[25], preds[26], preds[27]
+    p_co2, p_cost, p_sust = preds[29], preds[31], preds[34]
 
     tabs = st.tabs(["📊 Mechanical", "🏗️ Durability", "🌱 Economy", "🚀 Optimizer", "📜 Methodology", "📝 Feedback"])
 
@@ -113,11 +115,14 @@ if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True)
         m2.metric("CS 28-Days", f"{p_28d:.2f} MPa")
         m3.metric("CS 90-Days", f"{p_90d:.2f} MPa")
         m4.metric("Split Tensile", f"{p_sts:.2f} MPa")
-        st.plotly_chart(px.line(x=[7, 28, 90], y=[p_7d, p_28d, p_90d], title="Strength Evolution", markers=True))
+        
+        # منحنى تطور المقاومة 
+        fig = px.line(x=[7, 28, 90], y=[p_7d, p_28d, p_90d], title="Strength Gain Chart", markers=True)
+        st.plotly_chart(fig, use_container_width=True)
         
         if st.button("📤 Sync Full Report"):
-            d = {"Cement": cem, "Water": wat, "NCA": nca, "NFA": nfa, "RCA_P": rca, "MRCA_P": mrca, "SF": sf, "FA": fa, "Fiber": fib, "W_C": wc, "SP": sp, "CS_28": round(p_28d, 2), "STS": round(p_sts, 2), "EM": round(p_em, 2), "CO2": round(p_co2, 2), "Cost": round(p_cost, 2), "Sust": round(p_sust, 4), "Rank": "A+", "Type": "AI_Prediction"}
-            if send_to_google_form(d): st.balloons(); st.success("✅ Recorded in Master Database!")
+            d = {"Cement": cem, "Water": wat, "NCA": nca, "NFA": nfa, "RCA_P": rca, "MRCA_P": mrca, "SF": sf, "FA": fa, "Fiber": fib, "W_C": wc, "SP": sp, "CS_28": round(p_28d, 2), "STS": round(p_sts, 2), "EM": round(p_em, 2), "CO2": round(p_co2, 2), "Cost": round(p_cost, 2), "Sust": round(p_sust, 4), "Rank": "A+", "Type": "AI_Master_Prediction"}
+            if send_to_google_form(d): st.balloons(); st.success("✅ Synced!")
 
     with tabs[1]:
         st.subheader("Durability & Physical Properties")
@@ -127,28 +132,21 @@ if st.button("🚀 Analyze Comprehensive Performance", use_container_width=True)
         d3.metric("Carb. Depth", f"{p_carb:.2f} mm")
         d4.metric("Shrinkage", f"{p_shr:.2f}")
 
-    with tabs[2]:
-        st.subheader("Environmental & Economic Analysis")
-        l1, l2, l3 = st.columns(3)
-        l1.metric("CO2 Footprint", f"{p_co2:.1f} kg/m³")
-        l2.metric("Mix Cost", f"${p_cost:.2f}")
-        l3.metric("Sust. Index", f"{p_sust:.3f}")
-
     with tabs[4]:
-        st.subheader("Technical Methodology")
+        st.subheader("Technical Methodology") [cite: 1]
         st.markdown(f"""
         <div class='doc-card'>
         <b>Algorithm:</b> Random Forest Multi-output Regression<br>
-        <b>Dataset:</b> DIAMOND Database ({len(db)} Samples)<br>
-        <b>Domain:</b> {db['CS_28'].min()} to {db['CS_28'].max()} MPa (CS_28 Range)<br>
+        <b>Database:</b> DIAMOND Database ({len(db)} Samples)<br>
+        <b>Domain:</b> {db['CS_28'].min()} to {db['CS_28'].max()} MPa<br>
         <b>R² Accuracy:</b> 95.57% | <b>COV:</b> 6.16%
         </div>
         """, unsafe_allow_html=True)
         v1, v2 = st.columns(2)
-        v1.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/accuracy_plot.png", caption="Accuracy Plot")
-        v2.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/feature_importance.png", caption="Feature Sensitivity")
+        v1.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/accuracy_plot.png", caption="Scatter Plot ")
+        v2.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/feature_importance.png", caption="Feature Sensitivity ")
 
-# 7. الفوتر مع إخلاء المسؤولية
+# 7. الفوتر مع إخلاء المسؤولية 
 st.markdown(f"""
     <div class='footer-text'>
     © {datetime.now().year} Aya Mohammed Sanad | Mansoura University<br>
