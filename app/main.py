@@ -183,19 +183,53 @@ if run_button:
         v_c1.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/accuracy_plot.png", caption="Model Accuracy Plot (R² ≈ 95.3%)")
         v_c2.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/feature_importance.png", caption="Feature Sensitivity Analysis")
 
-    with tab4:
+   with tab4:
         st.markdown("<div class='optimizer-card'>", unsafe_allow_html=True)
-        st.subheader("🚀 AI-Powered Mix Optimizer")
-        req_strength = st.slider("Target Strength (MPa)", 20, 100, 40, key="opt_slider")
-        if st.button("Generate Optimal Sustainable Design"):
-            res = db[(db['CS_28'] >= req_strength - 3) & (db['CS_28'] <= req_strength + 3)].sort_values('Sustainability', ascending=False)
-            if not res.empty:
-                best = res.iloc[0]
-                st.success(f"🏆 Best Eco-Mix Found: {best['Mix_ID']}")
-                st.write(f"Cement: {best['Cement']} | Water: {best['Water']} | RCA: {best['RCA_P']}%")
-            else: st.error("No exact matches found in database.")
+        st.subheader("🚀 Smart Mix Design Recommender")
+        st.write("Enter your target strength, and the AI will suggest the **Top 5 Sustainable Mixes** from the Diamond Database.")
+        
+        # 1. مدخل المقاومة المستهدفة
+        target_str = st.slider("Select Target Compressive Strength (MPa)", 20, 100, 40, key="opt_slider_v3")
+        
+        if st.button("Generate Candidate Mix Designs"):
+            # 2. البحث في قاعدة البيانات (سماحية +/- 2.5 ميجا باسكال)
+            tolerance = 2.5
+            matches = db[(db['CS_28'] >= target_str - tolerance) & (db['CS_28'] <= target_str + tolerance)]
+            
+            if not matches.empty:
+                # 3. ترتيب الخلطات حسب الاستدامة واختيار أفضل 5
+                top_5 = matches.sort_values('Sustainability', ascending=False).head(5).copy()
+                
+                st.success(f"✅ Found {len(top_5)} high-performance candidates matching ~{target_str} MPa.")
+                
+                # 4. تجهيز الجدول للعرض الاحترافي (إعادة تسمية الأعمدة لتبدو رسمية)
+                display_df = top_5[[
+                    'Mix_ID', 'Cement', 'Water', 'RCA_P', 'MRCA_P', 'Silica_Fume', 
+                    'Fly_Ash', 'Nylon_Fiber', 'W_C', 'SP', 'CS_28', 'CO2', 'Sustainability'
+                ]].copy()
+                
+                # تحويل الأسماء لتكون واضحة في الجدول
+                display_df.columns = [
+                    'Mix ID', 'Cement', 'Water', 'RCA %', 'MRCA %', 'S.Fume', 
+                    'F.Ash', 'Fiber', 'W/C', 'SP', 'Strength', 'CO2', 'Sust. Score'
+                ]
+                
+                # 5. عرض الجدول بتنسيق Streamlit الأنيق
+                st.dataframe(display_df.style.highlight_max(axis=0, subset=['Sust. Score'], color='#d4edda'), use_container_width=True)
+                
+                st.info("💡 **Note:** Mixes are ranked by Sustainability. The green-highlighted cell shows the most eco-efficient option.")
+                
+                # 6. تفصيل إضافي لأفضل خلطة (المركز الأول)
+                best_one = top_5.iloc[0]
+                st.markdown(f"""
+                <div style='background-color: white; padding: 15px; border-radius: 10px; border: 1px solid #004a99;'>
+                <b>Top Recommendation (Mix {best_one['Mix_ID']}):</b><br>
+                This mix achieves <b>{best_one['CS_28']} MPa</b> with only <b>{best_one['CO2']} kg/m³</b> of CO2 emissions.
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.error("No matches found in the database for this specific range. Please try a different target.")
         st.markdown("</div>", unsafe_allow_html=True)
-
     with tab5:
         st.subheader("Researcher Feedback Portal")
         with st.form("fb_form"):
