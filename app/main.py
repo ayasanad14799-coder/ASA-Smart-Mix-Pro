@@ -25,7 +25,17 @@ def send_to_google_sheets(payload):
 st.markdown("""
     <style>
     .main-title { color: #004a99; text-align: center; font-weight: bold; font-size: 3em; margin-bottom: 5px; }
-    .thesis-title { color: #222; text-align: center; font-size: 1.45em; font-weight: bold; border-bottom: 3px solid #004a99; padding-bottom: 15px; margin-bottom: 25px; line-height: 1.6; }
+    ..thesis-title { 
+        color: #222; 
+        text-align: center; 
+        font-family: "Times New Roman", Times, serif; /* تغيير نوع الخط */
+        font-size: 22px; /* حجم الخط المناسب تقريباً لـ 16pt */
+        font-weight: bold; 
+        border-bottom: 3px solid #004a99; 
+        padding-bottom: 15px; 
+        margin-bottom: 25px; 
+        line-height: 1.6; 
+    }
     .stMetric { background-color: #ffffff; padding: 20px; border-radius: 12px; border-left: 6px solid #004a99; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     .doc-card { background-color: #f0f2f6; padding: 15px; border-radius: 10px; border-right: 6px solid #004a99; margin-bottom: 15px; }
     .optimizer-card { background-color: #f1f8e9; padding: 25px; border-radius: 15px; border: 2px solid #2e7d32; }
@@ -34,29 +44,37 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. نظام الدخول الآمن وتنسيق الشعارات (المتناظر يمين ويسار)
+# 2. نظام الدخول الآمن وتنسيق الشعارات (تعديل: شعار يمين وشعار يسار)
 if "auth" not in st.session_state: st.session_state.auth = False
 if not st.session_state.auth:
+    # تقسيم الشاشة ليكون العمل في المنتصف
     col_l, col_mid, col_r = st.columns([1, 4, 1])
     with col_mid:
-        st.markdown("<br>", unsafe_allow_html=True)
-        # تنسيق الشعارات: واحد أقصى اليسار والآخر أقصى اليمين
-        logo_left, spacer, logo_right = st.columns([1, 3, 1])
+t.markdown("<div class='thesis-title'>Multi-criteria analysis of eco-efficient concrete from Technical, Environmental and Economic aspects</div>", unsafe_allow_html=True)        
+        # إنشاء 3 أعمدة داخلية: لوجو يسار، مسافة فارغة كبيرة، لوجو يمين
+        logo_left, spacer, logo_right = st.columns([1, 2.5, 1])
+        
         with logo_left:
-            st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=125)
+            # شعار جامعة المنصورة (يسار)
+            st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/LOGO.png", width=115)
+        
         with logo_right:
-            st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=125)
+            # شعار الكلية (يمين)
+            st.image("https://raw.githubusercontent.com/ayasanad14799-coder/ASA-Smart-Mix-Pro/main/docs/OIP.jfif", width=115)
         
-        st.markdown("<h1 style='text-align: center; color: #004a99;'>ASA-Smart-Mix Pro</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; font-weight: bold;'>🔒 Secure Master's Research Portal</p>", unsafe_allow_html=True)
+        # نصوص الترحيب في المنتصف
+        st.markdown("<h1 style='text-align: center; color: #004a99; font-weight: bold;'>ASA-Smart-Mix Pro</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; font-weight: bold; color: #555;'>🔒 Master's Research Data Management System</p>", unsafe_allow_html=True)
         
+        # صندوق الدخول بتنسيق متناسق
         with st.form("login"):
-            key = st.text_input("Access Key", type="password")
-            if st.form_submit_button("Enter Research System"):
+            key = st.text_input("Enter Access Key", type="password")
+            if st.form_submit_button("Start Research Session"):
                 if key == "ASA2026":
                     st.session_state.auth = True
                     st.rerun()
-                else: st.error("Access Denied. Please contact Researcher Aya Sanad.")
+                else: 
+                    st.error("Access Denied. Please contact Researcher Aya Sanad.")
     st.stop()
 
 # 3. تحميل الأصول (المسارات الاحترافية الجديدة)
